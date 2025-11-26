@@ -1,0 +1,74 @@
+###############################
+# Node / Svelte / SvelteKit
+###############################
+
+# Node modules
+node_modules/
+
+# SvelteKit build output
+.svelte-kit/
+build/
+package-lock.json
+
+# Vite cache
+.vite/
+vite.config.mjs.timestamp-*
+
+# Local environment files
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor settings
+.vscode/
+.idea/
+
+################################
+# Go / Fiber backend
+################################
+
+# Go build output
+bin/
+dist/
+build/
+
+# Executable binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Go coverage
+*.out
+
+# Fiber temporary files
+fiber.pid
+
+# Air / Live reload (if you use Air)
+tmp/
+.air/
+
+################################
+# OS-specific
+################################
+
+.DS_Store
+Thumbs.db
+
+################################
+# Docker
+################################
+
+# Docker files
+docker-compose.override.yml
+
+# Docker volumes
+volumes/
+data/
