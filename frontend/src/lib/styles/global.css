@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+/* ------------------------- */
+/* --- CSS Custom Properties (Theme) --- */
+/* ------------------------- */
+:root {
+	--primary-glow: #a855f7; /* Brighter purple for glows */
+	--primary-color: #8b5cf6;
+	--primary-hover: #7c3aed;
+	--text-color: #e5e7eb;
+	--text-muted-color: #9ca3af;
+	--bg-color: #0f172a; /* Darker, more neutral blue */
+	--surface-color: #1e293b; /* Slightly lighter surface */
+	--border-color: #334155;
+}
+
+/* ------------------------- */
+/* --- Base & Typography --- */
+/* ------------------------- */
+body {
+	font-family: 'Inter', sans-serif;
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	margin: 0;
+	padding: 0;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+
+	/* Animated Gradient Background */
+	background: linear-gradient(300deg, #0f172a, #1e293b, #0f172a);
+	background-size: 180% 180%;
+	animation: gradient-animation 18s ease infinite;
+}
+
+/* ------------------------- */
+/* --- Keyframe Animations --- */
+/* ------------------------- */
+@keyframes gradient-animation {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes slide-in-up {
+	from {
+		transform: translateY(20px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+/* ------------------------- */
+/* --- Animation Utilities --- */
+/* ------------------------- */
+.animate-fade-in {
+	animation: fade-in 0.8s ease-out forwards;
+}
+
+.animate-slide-in-up {
+	animation: slide-in-up 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Delay utilities for staggered animations */
+.anim-delay-100 { animation-delay: 0.1s; }
+.anim-delay-200 { animation-delay: 0.2s; }
+.anim-delay-300 { animation-delay: 0.3s; }
+
+
+/* ------------------------- */
+/* --- Global Layouts --- */
+/* ------------------------- */
+.page-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 1rem;
+	width: 100%;
+}
