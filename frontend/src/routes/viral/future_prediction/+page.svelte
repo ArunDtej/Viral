@@ -130,15 +130,37 @@
 	}
 
 	.form-container {
+		position: relative;
 		width: 100%;
-		max-width: 450px;
-		background-color: var(--surface-color);
+		max-width: 500px;
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
 		padding: 3rem;
-		border-radius: 16px;
-		border: 1px solid var(--border-color);
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+		border-radius: 24px;
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 		opacity: 0;
-		position: relative; /* Needed for loading overlay positioning */
+	}
+
+	.form-container::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 24px;
+		padding: 2px;
+		background: linear-gradient(
+			135deg,
+			rgba(168, 85, 247, 0.5) 0%,
+			rgba(236, 72, 153, 0.5) 50%,
+			rgba(245, 158, 11, 0.5) 100%
+		);
+		-webkit-mask:
+			linear-gradient(#fff 0 0) content-box,
+			linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask-composite: exclude;
+		pointer-events: none;
 	}
 	.title-container {
 		text-align: center;
@@ -176,25 +198,31 @@
 	select {
 		width: 100%;
 		padding: 0.875rem 1rem;
-		border: 1px solid var(--border-color);
-		border-radius: 8px;
-		background-color: #334155; /* Slightly lighter input background */
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		border-radius: 12px;
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
 		color: var(--text-color);
 		font-size: 1rem;
 		transition:
 			border-color 0.3s ease,
+			background 0.3s ease,
 			box-shadow 0.3s ease;
 	}
 
 	input::placeholder {
-		color: #9ca3af;
+		color: rgba(255, 255, 255, 0.4);
 	}
 
 	input:focus,
 	select:focus {
 		outline: none;
-		border-color: var(--primary-color);
-		box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+		border-color: rgba(168, 85, 247, 0.6);
+		background: rgba(255, 255, 255, 0.08);
+		box-shadow:
+			0 0 0 4px rgba(168, 85, 247, 0.15),
+			0 8px 16px rgba(168, 85, 247, 0.2);
 	}
 
 	/* Style for date input placeholder */
@@ -203,26 +231,33 @@
 	}
 
 	.submit-btn {
+		position: relative;
 		display: block;
 		width: 100%;
 		padding: 1rem;
 		border: none;
-		border-radius: 8px;
-		background-image: linear-gradient(to right, var(--primary-color), var(--primary-hover));
+		border-radius: 12px;
+		background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f59e0b 100%);
+		background-size: 200% 200%;
 		color: white;
-		font-size: 1rem;
-		font-weight: 500;
+		font-size: 1.125rem;
+		font-weight: 600;
 		cursor: pointer;
 		transition:
-			transform 0.2s ease-out,
-			box-shadow 0.2s ease-out;
+			transform 0.3s ease,
+			box-shadow 0.3s ease,
+			background-position 0.3s ease;
 		margin-top: 2rem;
 		opacity: 0;
+		box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
 	}
 
 	.submit-btn:hover {
-		transform: translateY(-3px) scale(1.02);
-		box-shadow: 0 7px 20px rgba(139, 92, 246, 0.25);
+		transform: translateY(-2px);
+		background-position: 100% 50%;
+		box-shadow:
+			0 12px 32px rgba(168, 85, 247, 0.5),
+			0 0 40px rgba(168, 85, 247, 0.3);
 	}
 
 	.submit-btn:disabled {
@@ -304,12 +339,19 @@
 	}
 
 	@keyframes rotate {
-		100% { transform: rotate(360deg); }
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	@keyframes bounce {
-		0%, 100% { transform: scale(0); }
-		50% { transform: scale(1); }
+		0%,
+		100% {
+			transform: scale(0);
+		}
+		50% {
+			transform: scale(1);
+		}
 	}
 
 	.loading-text {
@@ -320,7 +362,12 @@
 	}
 
 	@keyframes pulse-text {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0.7; }
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.7;
+		}
 	}
 </style>

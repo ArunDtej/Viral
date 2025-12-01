@@ -2,6 +2,7 @@
 	import './layout.css';
 	import '../lib/styles/global.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import StarryBackground from '$lib/components/StarryBackground.svelte';
 
 	let { children } = $props();
 </script>
@@ -11,8 +12,7 @@
 </svelte:head>
 
 <div class="bg-black fixed inset-0 z-0">
-    <div class="stars"></div>
-    <div class="twinkling"></div>
+	<StarryBackground />
 </div>
 
 <div class="relative z-10 min-h-screen flex flex-col">
