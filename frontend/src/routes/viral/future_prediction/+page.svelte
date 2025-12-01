@@ -2,11 +2,12 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	let name: string;
-	let dob: string;
-	let gender: string;
+	let name: string = '';
+	let dob: string = '';
+	let gender: string = '';
 	let loading = false;
 	let mounted = false;
+	let errorMessage = '';
 
 	onMount(() => {
 		mounted = true;
@@ -14,19 +15,21 @@
 
 	async function handleSubmit() {
 		if (!mounted) return;
+
+		// Clear previous errors
+		errorMessage = '';
 		loading = true;
 
-		const minLoadingTime = 2000; // 2 seconds
+		const minLoadingTime = 2000; // 2 seconds for better UX
 		const startTime = Date.now();
 
 		try {
-			const response = await fetch('http://localhost:8000/api/predict', {
+			const response = await fetch('/api/predict', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					page_type: 'future_prediction',
 					name,
 					dob,
 					gender
@@ -42,14 +45,15 @@
 
 			if (response.ok) {
 				const data = await response.json();
+				// Navigate to the prediction result page
 				goto(`/viral/future_prediction/${data.id}`);
 			} else {
-				// Handle error
-				alert('Prediction failed. Please try again.');
+				const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
+				errorMessage = errorData.message || 'Failed to generate prediction. Please try again.';
 			}
 		} catch (error) {
 			console.error('Error submitting prediction:', error);
-			alert('An error occurred. Please try again.');
+			errorMessage = 'Network error. Please check your connection and try again.';
 		} finally {
 			loading = false;
 		}
@@ -106,6 +110,13 @@
 					Predict My Future
 				{/if}
 			</button>
+
+			{#if errorMessage}
+				<div class="error-message">
+					<span class="error-icon">⚠️</span>
+					<p>{errorMessage}</p>
+				</div>
+			{/if}
 		</form>
 
 		{#if loading}
@@ -263,6 +274,54 @@
 	.submit-btn:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+	}
+
+	.error-message {
+		margin-top: 1.5rem;
+		padding: 1rem 1.25rem;
+		background: rgba(239, 68, 68, 0.1);
+		border: 1px solid rgba(239, 68, 68, 0.3);
+		border-radius: 12px;
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		animation:
+			shake 0.5s ease-in-out,
+			fade-in 0.3s ease-out;
+	}
+
+	.error-icon {
+		font-size: 1.25rem;
+		flex-shrink: 0;
+	}
+
+	.error-message p {
+		margin: 0;
+		color: #fca5a5;
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+
+	@keyframes shake {
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		10%,
+		30%,
+		50%,
+		70%,
+		90% {
+			transform: translateX(-5px);
+		}
+		20%,
+		40%,
+		60%,
+		80% {
+			transform: translateX(5px);
+		}
 	}
 
 	.animate-slide-in-up {
