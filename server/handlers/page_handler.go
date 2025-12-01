@@ -41,20 +41,40 @@ func HandlePage(c *fiber.Ctx) error {
 }
 
 func HandlePredict(c *fiber.Ctx) error {
-	var userData interface{}
-	if err := c.BodyParser(&userData); err != nil {
-		// If body is empty or not JSON, proceed without user data
-		userData = nil
+	var req struct {
+		Name   string `json:"name"`
+		Dob    string `json:"dob"`
+		Gender string `json:"gender"`
+		Slug   string `json:"slug"`
 	}
 
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cannot parse JSON",
+		})
+	}
+
+	generator, ok := predictionGenerators[req.Slug]
+	if !ok {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid slug",
+		})
+	}
+
+	prediction := generator(req.Name, req.Dob)
 	predictionID := uuid.New().String()
 	log.Printf("Saving prediction with ID: %s", predictionID)
-	prediction := futurePredictions[rand.Intn(len(futurePredictions))]
+
+	title, ok := predictionTitles[req.Slug]
+	if !ok {
+		title = "Viral Prediction" // Default title if not found
+	}
 
 	predictionData := map[string]interface{}{
-		"page_type":  "prediction", // This can be a generic type for direct predictions
-		"user_data":  userData,
+		"page_type":  req.Slug,
+		"user_data":  req,
 		"prediction": prediction,
+		"title":      title, // Include the title
 	}
 
 	jsonData, err := json.Marshal(predictionData)
@@ -73,8 +93,10 @@ func HandlePredict(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"id": predictionID,
-		"prediction":    prediction,
+		"id":         predictionID,
+		"page_type":  req.Slug,
+		"prediction": prediction,
+		"title":      title,
 	})
 }
 

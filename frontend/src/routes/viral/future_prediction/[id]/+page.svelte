@@ -8,9 +8,11 @@
 	let mounted = false;
 	onMount(() => {
 		mounted = true;
+		console.log('Page mounted, mounted =', mounted);
 	});
 
 	function share() {
+		console.log('Share button clicked!');
 		if (navigator.share) {
 			navigator
 				.share({
@@ -53,7 +55,7 @@
 			</p>
 		</div>
 
-		<div class="card-footer" class:animate-footer={mounted}>
+		<div class="card-footer">
 			<button class="share-btn" on:click={share}>
 				<Share size={20} />
 				<span>Share with friends</span>
@@ -138,17 +140,30 @@
 	}
 
 	.prediction-text {
-		font-size: 1.875rem;
-		font-weight: 600;
+		font-size: 2.5rem; /* Increased from 1.875rem */
+		font-weight: 700; /* Increased from 600 */
+		letter-spacing: 0.05em; /* Added letter spacing */
 		background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f59e0b 100%);
 		-webkit-background-clip: text;
 		background-clip: text;
 		-webkit-text-fill-color: transparent;
-		line-height: 1.6;
+		line-height: 1.4; /* Adjusted line height */
 		margin: 0;
-		text-shadow: 0 0 40px rgba(168, 85, 247, 0.3);
-		filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.2));
+		text-shadow: 0 0 60px rgba(168, 85, 247, 0.4); /* Increased shadow */
+		filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.3)); /* Increased drop shadow */
+		animation: pulse-glow 2s infinite alternate; /* Added pulse animation */
 	}
+
+    @keyframes pulse-glow {
+        from {
+            text-shadow: 0 0 40px rgba(168, 85, 247, 0.3);
+            filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.2));
+        }
+        to {
+            text-shadow: 0 0 80px rgba(168, 85, 247, 0.6);
+            filter: drop_shadow(0 0 40px rgba(168, 85, 247, 0.4));
+        }
+    }
 
 	.card-footer {
 		position: relative;
@@ -158,7 +173,6 @@
 		border-top: 1px solid rgba(255, 255, 255, 0.1);
 		display: flex;
 		justify-content: center;
-		opacity: 0;
 	}
 
 	.share-btn {

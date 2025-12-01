@@ -7,6 +7,15 @@ export interface Prediction {
 }
 
 export const predictions: { [key: string]: Omit<Prediction, 'slug'> } = {
+	'future-prediction': {
+		title: 'Future Prediction',
+		icon: '✨',
+		stars: 5,
+		generate: (name, dob) => {
+			const days = Math.floor(Math.random() * 365) + 1;
+			return `In the next ${days} days, something amazing will happen to ${name}.`;
+		}
+	},
 	'when-will-you-get-married': {
 		title: 'When will you get married?',
 		icon: '❤️', // Placeholder icon
