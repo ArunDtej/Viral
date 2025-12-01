@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import { Share } from 'lucide-svelte';
 
 	export let data: PageData;
 
@@ -10,12 +9,23 @@
 		mounted = true;
 	});
 
+	// The generate function is now part of the prediction object from data.
+	// We need to call it with appropriate arguments.
+	// For simplicity, let's assume we have default values or get them from user input.
+	let generatedPrediction: string = '';
+	let name: string = 'Mysterious User'; // Placeholder
+	let dob: string = '2000-01-01'; // Placeholder
+
+	$: if (data.prediction && mounted) {
+		generatedPrediction = data.prediction.generate(name, dob);
+	}
+
 	function share() {
 		if (navigator.share) {
 			navigator
 				.share({
-					title: 'My Future Prediction!',
-					text: `I just found out my future! Check it out:`,
+					title: 'My Viral Prediction!',
+					text: `I just found out my viral prediction: ${generatedPrediction}`,
 					url: window.location.href
 				})
 				.catch(console.error);
@@ -34,29 +44,29 @@
 </script>
 
 <svelte:head>
-	<title>Your Future Prediction</title>
-	<meta name="description" content={data.prediction.prediction} />
+	<title>{data.prediction.title} - Viral Predictions</title>
+	<meta name="description" content={generatedPrediction} />
 </svelte:head>
 
 <div class="page-container relative z-10">
 	<div class="card" class:animate-card={mounted}>
 		<div class="card-header" class:animate-header={mounted}>
-			<h1 class="animate-text">Here is your future prediction</h1>
+			<span class="text-5xl mb-4 block">{data.prediction.icon}</span>
+			<h1 class="animate-text">{data.prediction.title}</h1>
 			<p class="animate-text" style="--anim-delay: 0.2s">
-				This secret is just for {data.prediction.user_data.name}.
+				Unveiling your unique viral destiny!
 			</p>
 		</div>
 
 		<div class="card-body" class:animate-body={mounted}>
 			<p class="prediction-text animate-text" style="--anim-delay: 0.8s">
-				{data.prediction.prediction}
+				{generatedPrediction}
 			</p>
 		</div>
 
 		<div class="card-footer" class:animate-footer={mounted}>
 			<button class="share-btn" on:click={share}>
-				<Share size={20} />
-				<span>Share with friends</span>
+				<span>Share your prediction</span>
 			</button>
 		</div>
 	</div>

@@ -1,24 +1,89 @@
-<div class="page-container">
-	<div class="form-container animate-slide-in-up">
-		<div class="title-container animate-fade-in">
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+
+	let name: string;
+	let dob: string;
+	let gender: string;
+	let loading = false;
+	let mounted = false;
+
+	onMount(() => {
+		mounted = true;
+	});
+
+	async function handleSubmit() {
+		if (!mounted) return;
+		loading = true;
+
+		const minLoadingTime = 2000; // 2 seconds
+		const startTime = Date.now();
+
+		try {
+			const response = await fetch('http://localhost:8000/api/predict', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					page_type: 'future_prediction',
+					name,
+					dob,
+					gender
+				})
+			});
+
+			const elapsedTime = Date.now() - startTime;
+			const remainingTime = minLoadingTime - elapsedTime;
+
+			if (remainingTime > 0) {
+				await new Promise((resolve) => setTimeout(resolve, remainingTime));
+			}
+
+			if (response.ok) {
+				const data = await response.json();
+				goto(`/viral/future_prediction/${data.id}`);
+			} else {
+				// Handle error
+				alert('Prediction failed. Please try again.');
+			}
+		} catch (error) {
+			console.error('Error submitting prediction:', error);
+			alert('An error occurred. Please try again.');
+		} finally {
+			loading = false;
+		}
+	}
+</script>
+
+<div class="page-container relative z-10">
+	<div class="form-container" class:animate-slide-in-up={mounted}>
+		<div class="title-container" class:animate-fade-in={mounted}>
 			<h1>My Future Prediction</h1>
 			<p>Enter your details below to see what the future holds.</p>
 		</div>
 
-		<form on:submit|preventDefault={() => alert('Calculating your future...')}>
-			<div class="form-group animate-fade-in anim-delay-100">
+		<form on:submit|preventDefault={handleSubmit}>
+			<div class="form-group" class:animate-fade-in={mounted} style="--anim-delay: 100ms">
 				<label for="name">Full Name</label>
-				<input type="text" id="name" name="name" placeholder="e.g., Jane Doe" required />
+				<input
+					type="text"
+					id="name"
+					name="name"
+					placeholder="e.g., Jane Doe"
+					required
+					bind:value={name}
+				/>
 			</div>
 
-			<div class="form-group animate-fade-in anim-delay-200">
+			<div class="form-group" class:animate-fade-in={mounted} style="--anim-delay: 200ms">
 				<label for="dob">Date of Birth</label>
-				<input type="date" id="dob" name="dob" required />
+				<input type="date" id="dob" name="dob" required bind:value={dob} />
 			</div>
 
-			<div class="form-group animate-fade-in anim-delay-300">
+			<div class="form-group" class:animate-fade-in={mounted} style="--anim-delay: 300ms">
 				<label for="gender">Gender</label>
-				<select id="gender" name="gender" required>
+				<select id="gender" name="gender" required bind:value={gender}>
 					<option value="" disabled selected>Select your gender</option>
 					<option value="female">Female</option>
 					<option value="male">Male</option>
@@ -28,14 +93,42 @@
 				</select>
 			</div>
 
-			<button type="submit" class="submit-btn animate-fade-in anim-delay-300">
-				Predict My Future
+			<button
+				type="submit"
+				class="submit-btn"
+				class:animate-fade-in={mounted}
+				style="--anim-delay: 300ms"
+				disabled={loading}
+			>
+				{#if loading}
+					<span>Calculating...</span>
+				{:else}
+					Predict My Future
+				{/if}
 			</button>
 		</form>
+
+		{#if loading}
+			<div class="loading-overlay">
+				<div class="fancy-spinner">
+					<div class="dot1"></div>
+					<div class="dot2"></div>
+				</div>
+				<p class="loading-text">Generating your future...</p>
+			</div>
+		{/if}
 	</div>
 </div>
 
 <style>
+	.page-container {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+	}
+
 	.form-container {
 		width: 100%;
 		max-width: 450px;
@@ -44,10 +137,9 @@
 		border-radius: 16px;
 		border: 1px solid var(--border-color);
 		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-		/* Make sure opacity is 0 to start for animations */
 		opacity: 0;
+		position: relative; /* Needed for loading overlay positioning */
 	}
-
 	.title-container {
 		text-align: center;
 		margin-bottom: 2.5rem;
@@ -131,5 +223,104 @@
 	.submit-btn:hover {
 		transform: translateY(-3px) scale(1.02);
 		box-shadow: 0 7px 20px rgba(139, 92, 246, 0.25);
+	}
+
+	.submit-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.animate-slide-in-up {
+		animation: slide-in-up 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+	}
+
+	.animate-fade-in {
+		animation: fade-in 0.6s ease-out forwards;
+		animation-delay: var(--anim-delay, 0s);
+	}
+
+	@keyframes slide-in-up {
+		from {
+			transform: translateY(30px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Loading Overlay Styles */
+	.loading-overlay {
+		position: absolute;
+		inset: 0;
+		background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		border-radius: 16px;
+		z-index: 10;
+		color: white;
+		font-size: 1.2rem;
+		font-weight: 500;
+		backdrop-filter: blur(5px); /* Subtle blur effect */
+	}
+
+	.fancy-spinner {
+		width: 50px;
+		height: 50px;
+		position: relative;
+		animation: rotate 2s linear infinite;
+		margin-bottom: 1.5rem;
+	}
+
+	.fancy-spinner .dot1,
+	.fancy-spinner .dot2 {
+		width: 60%;
+		height: 60%;
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		background-color: var(--primary-color);
+		border-radius: 100%;
+		animation: bounce 2s infinite ease-in-out;
+	}
+
+	.fancy-spinner .dot2 {
+		top: auto;
+		bottom: 0;
+		animation-delay: -1s;
+		background-color: var(--primary-hover);
+	}
+
+	@keyframes rotate {
+		100% { transform: rotate(360deg); }
+	}
+
+	@keyframes bounce {
+		0%, 100% { transform: scale(0); }
+		50% { transform: scale(1); }
+	}
+
+	.loading-text {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: #fff;
+		animation: pulse-text 2s infinite ease-in-out;
+	}
+
+	@keyframes pulse-text {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.7; }
 	}
 </style>

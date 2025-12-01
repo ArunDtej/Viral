@@ -10,4 +10,11 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<div class="bg-black fixed inset-0 z-0">
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+</div>
+
+<div class="relative z-10 min-h-screen flex flex-col">
+	{@render children()}
+</div>
