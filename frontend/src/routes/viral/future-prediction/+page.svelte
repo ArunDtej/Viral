@@ -36,7 +36,7 @@
 					name,
 					dob,
 					gender,
-					slug: $page.params.slug
+					slug: 'future-prediction'
 				})
 			});
 
@@ -50,7 +50,7 @@
 			if (response.ok) {
 				const responseData = await response.json();
 				// Navigate to the prediction result page
-				goto(`/viral/${$page.params.slug}/${responseData.id}`);
+				goto(`/viral/future-prediction/${responseData.id}`);
 			} else {
 				const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
 				errorMessage = errorData.message || 'Failed to generate prediction. Please try again.';

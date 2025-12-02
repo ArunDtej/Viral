@@ -13,14 +13,11 @@ export async function POST({ request }) {
 		}
 
 		const payload = {
-			page_type: body.slug || 'future_prediction',
+			slug: body.slug || 'future-prediction',
 			name: body.name,
-			dob: body.dob
+			dob: body.dob,
+			gender: body.gender
 		};
-
-		if (body.gender) {
-			payload.gender = body.gender;
-		}
 
 		// Call the backend API
 		const response = await fetch(`${BACKEND_URL}/api/predict`, {
