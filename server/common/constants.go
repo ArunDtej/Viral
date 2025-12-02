@@ -13,7 +13,7 @@ const (
 
 // Page types
 const (
-	PageTypeViral           = "viral"
+	PageTypeViral            = "viral"
 	PageTypeFuturePrediction = "future_prediction"
 )
 
@@ -31,65 +31,58 @@ var PredictionTitles = map[string]string{
 	"which-country-will-you-live-in":     "Which country will you live in?",
 	"your-2025-fortune-reading":          "Your 2025 fortune reading",
 }
-
-// Future Predictions
 var FuturePredictions = []string{
-	"You'll text your boss about your llama weekend plans by mistake.",
-	"You'll trip, spill drinks, but somehow still look cool in front of your crush.",
-	"Your pet will learn to talk, only to spill your embarrassing secrets.",
-	"You'll set off the smoke alarm twice trying a fancy cooking move.",
-	"You'll wear two different shoes to a big meeting, unnoticed until later.",
-	"Stuck in a public restroom, your only escape is a tiny window.",
-	"You'll sing loudly in a silent library, thinking you're alone.",
-	"You'll accidentally call your teacher 'mom' or 'dad'.",
-	"A dance move gone wrong will lead to an unintentional worm.",
-	"You'll walk into the wrong house, interrupting an awkward family dinner.",
-	"A bird will poop on your head mid-selfie.",
-	"You'll 'reply all' to an email complaining about the sender.",
-	"Head stuck in a sweater, someone important walks in.",
-	"You'll forget a joke's punchline, leading to awkward silence.",
-	"You'll order a giant item online with no idea where to put it.",
-	"Trying to sneak out, you'll loudly trip over your own feet.",
-	"You'll wear clothes inside out all day, oblivious.",
-	"A high-five attempt will result in an awkward air-slap.",
-	"Coffee will spill on your white shirt right before a big presentation.",
-	"Leaning on nothing, you'll fall spectacularly.",
-	"You'll accidentally like an old social media post from years ago.",
-	"Caught singing off-key at a red light.",
-	"You'll walk into a glass door, leaving a face imprint.",
-	"Trying to pick something up, you'll do a full public squat.",
-	"A toy will make an embarrassing noise during a work meeting.",
+	"You’ll bring home a girlfriend. Mom asks about wedding venues before she sits down.",
+	"Auntie will ask your salary loud enough for the neighbors to update their group chat.",
+	"You’ll score 99%. Mom asks where the other 1% went.",
+	"You’ll come home after 10 p.m. Parents waiting on the couch like it’s a crime drama.",
+	"Mom will forward you a girl’s full résumé, blood type, and childhood piano videos.",
+	"You’ll say ‘I’m full.’ Mom: ‘Eat or I stop eating forever.’",
+	"You’ll get into a top uni. Relatives: ‘Still not number one, sad.’",
+	"You’ll cough once. Grandma attacks with every herb known to mankind.",
+	"You’ll reach for the bill. Three uncles body-check you for honor.",
+	"You’ll introduce your girlfriend. First question: ‘What do her parents do for work?’",
+	"You’ll get a big bonus. Mom already spent it on your future house down payment.",
+	"You’ll wear shorts in winter. Mom wraps you in three jackets like a burrito.",
+	"You’ll sneeze. Family performs full exorcism with oils and hot towels.",
+	"You’ll say you’re tired. Dad: ‘Sleep is for after you’re successful.’",
+	"Next family dinner question: ‘When girlfriend? When house? When baby?’ In that order.",
+	"You’ll get a 98. Report card disappears into the void.",
+	"You’ll bring home a friend. Grandma gives them 90% of the food ‘because guest.’",
+	"You’ll try to leave the table. Mom packs enough leftovers for a month.",
+	"You’ll hit 27. Every auntie starts a countdown timer in the group chat.",
+	"You’ll buy a nice car. Cousin already bought a nicer one last week.",
 }
 
 // Base prediction strings for generators
 const (
-	PredictionBaseAmazingEvent      = "In the next %d days, something amazing will happen to %s."
-	PredictionBaseMarried           = "You will get married in %d years."
-	PredictionBaseMillionaire       = "You will become a millionaire in %d years."
-	PredictionBaseFutureChild       = "Here is what your future child could look like."
-	PredictionBaseLiveInCountry     = "You will live in %s."
+	PredictionBaseAmazingEvent  = "In the next %d days, something amazing will happen to %s."
+	PredictionBaseMarried       = "You will get married in %d years."
+	PredictionBaseMillionaire   = "You will become a millionaire in %d years."
+	PredictionBaseFutureChild   = "Here is what your future child could look like."
+	PredictionBaseLiveInCountry = "You will live in %s."
 )
 
 // Fortune Readings
 var FortuneReadings = []string{
-	"Your next big idea will come to you in the shower, and you'll forget it by the time you grab a towel.",
-	"A mysterious stranger will offer you cryptic advice, which will turn out to be a coupon for a discount on socks.",
-	"You will find a small, shiny object today that will bring you absolutely no luck whatsoever.",
-	"Your future holds a moment of profound realization: you've been pronouncing a common word wrong your entire life.",
-	"A sudden gust of wind will reveal your most embarrassing fashion choice to a crowd of onlookers.",
-	"You will accidentally become a local legend for a completely mundane act, like perfectly stacking groceries.",
-	"Your lucky number will lead you to a parking spot, but it will be for a unicycle.",
-	"A fortune cookie will predict your future, but it will be in a language you don't understand.",
-	"You will receive an unexpected inheritance, which turns out to be a collection of antique thimbles.",
-	"Your attempt to be spontaneous will lead to you getting lost in a corn maze for an hour.",
-	"A cosmic alignment will grant you a superpower: the ability to perfectly toast bread every time.",
-	"You will discover a secret talent for competitive napping, winning a bronze medal.",
-	"Your future self will send you a warning about a bad hair day, but it will arrive too late.",
-	"You will accidentally invent a new dance move that involves tripping, and it will become a viral sensation.",
-	"A talking animal will reveal a profound truth to you, but it will be about the best brand of cat food.",
-	"Your lucky charm will only work when you're wearing mismatched socks.",
-	"You will win a contest you don't remember entering, and the prize will be a year's supply of lukewarm tap water.",
-	"A moment of destiny will arrive, and you'll be too busy looking for your phone to notice.",
-	"Your future holds a brief, but intense, rivalry with a squirrel over a single acorn.",
-	"You will finally understand the meaning of life, but then immediately forget it because you're hungry.",
+	"Mom already printed the wedding invites. You haven’t met the girl yet.",
+	"Your blind date is a dentist from Shanghai. She’s 26 and ‘running out of time.’",
+	"She asks your household income before asking your name.",
+	"Future wife chosen by mom. You just handle the ring and the mortgage.",
+	"Auntie sends girl’s WeChat QR code + height + degree + parents’ job title.",
+	"You’re 5’10” and still the shortest guy at family dinner.",
+	"Date cancels because your horoscope ‘not compatible’ with hers.",
+	"Mom cries because you’re 29 and still no baby photo to send relatives.",
+	"She likes you until she hears you rent in Flushing, not own in Great Neck.",
+	"Future mother-in-law asks if you can transfer property title before engagement.",
+	"Girl says ‘I want a simple wedding.’ Budget starts at 88 tables.",
+	"Your red envelope to her parents heavier than your yearly bonus.",
+	"Mom sees your Tinder: ‘Why pay for app when I have 47 girls in my phone?’",
+	"She asks if you’re the ‘marry type’ on date #1.",
+	"Future kid must play piano AND violin or ‘wasted my suffering.’",
+	"Date brings calculator to KBBQ to split the bill by who ate what.",
+	"You finally bring girlfriend home. Grandma asks why she’s not a doctor.",
+	"She ghosts after finding out your dad isn’t a factory owner.",
+	"Lunar New Year question of the year: ‘Got girlfriend yet or still got time?’",
+	"Future wedding emcee already booked. You’re still looking for the bride.",
 }
