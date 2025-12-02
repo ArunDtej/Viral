@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"Viral/common" // Import the new common package
 	"Viral/db"
+	"database/sql"
 	"encoding/json"
+	"log"
 	"math/rand"
 	"time"
-	"log"
-	"Viral/common" // Import the new common package
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -63,38 +64,46 @@ func HandlePredict(c *fiber.Ctx) error {
 	}
 
 	prediction := generator(req.Name, req.Dob)
-	predictionID := uuid.New().String()
-	log.Printf("Saving prediction with ID: %s", predictionID)
+	uid := uuid.New().String() // Use uid for PostgreSQL
+	log.Printf("Saving prediction with UID: %s", uid)
 
 	title, ok := common.PredictionTitles[req.Slug]
 	if !ok {
 		title = common.DefaultPredictionTitle // Default title if not found
 	}
 
-	predictionData := map[string]interface{}{
-		"page_type":  req.Slug,
-		"user_data":  req,
-		"prediction": prediction,
-		"title":      title, // Include the title
-	}
-
-	jsonData, err := json.Marshal(predictionData)
+	// Prepare user_data for JSONB storage
+	userDataJSON, err := json.Marshal(req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": common.ErrFailedToCreatePrediction,
 		})
 	}
 
-	rdb := db.GetKVConnection()
-	err = rdb.Set(c.Context(), predictionID, jsonData, 0).Err()
+	// Prepare predictions data for JSONB storage
+	predictionsData := map[string]interface{}{
+		"prediction_text": prediction,
+		"title":           title,
+	}
+	predictionsJSON, err := json.Marshal(predictionsData)
 	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": common.ErrFailedToCreatePrediction,
+		})
+	}
+
+	// Insert into PostgreSQL
+	_, err = db.Pdb.Exec(`INSERT INTO predictions (uid, page_type, user_data, predictions) VALUES ($1, $2, $3, $4)`,
+		uid, req.Slug, userDataJSON, predictionsJSON)
+	if err != nil {
+		log.Printf("Error saving prediction to PostgreSQL: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": common.ErrFailedToSavePrediction,
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"id":         predictionID,
+		"id":         uid, // Return uid as id
 		"page_type":  req.Slug,
 		"prediction": prediction,
 		"title":      title,
@@ -116,55 +125,112 @@ func handleViral(c *fiber.Ctx, data interface{}) error {
 }
 
 func handleFuturePrediction(c *fiber.Ctx, data interface{}) error {
-	predictionID := uuid.New().String()
+	uid := uuid.New().String() // Use uid for PostgreSQL
 	prediction := common.FuturePredictions[rand.Intn(len(common.FuturePredictions))]
 
-	predictionData := map[string]interface{}{
-		"page_type":  common.PageTypeFuturePrediction,
-		"user_data":  data,
-		"prediction": prediction,
-	}
-
-	jsonData, err := json.Marshal(predictionData)
+	// Prepare user_data for JSONB storage
+	userDataJSON, err := json.Marshal(data)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": common.ErrFailedToCreatePrediction,
 		})
 	}
 
-	rdb := db.GetKVConnection()
-	err = rdb.Set(c.Context(), predictionID, jsonData, 0).Err()
+	// Prepare predictions data for JSONB storage
+	predictionsData := map[string]interface{}{
+		"prediction_text": prediction,
+	}
+	predictionsJSON, err := json.Marshal(predictionsData)
 	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": common.ErrFailedToCreatePrediction,
+		})
+	}
+
+	// Insert into PostgreSQL
+	_, err = db.Pdb.Exec(`INSERT INTO predictions (uid, page_type, user_data, predictions) VALUES ($1, $2, $3, $4)`,
+		uid, common.PageTypeFuturePrediction, userDataJSON, predictionsJSON)
+	if err != nil {
+		log.Printf("Error saving future prediction to PostgreSQL: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": common.ErrFailedToSavePrediction,
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"prediction_id": predictionID,
+		"prediction_id": uid, // Return uid as prediction_id
 		"prediction":    prediction,
 	})
 }
 
 func HandleGetPrediction(c *fiber.Ctx) error {
-	id := c.Params("id")
-	log.Printf("Attempting to retrieve prediction with ID: %s", id)
-	rdb := db.GetKVConnection()
+	uid := c.Params("id") // id is now uid
+	log.Printf("Attempting to retrieve prediction with UID: %s", uid)
 
-	val, err := rdb.Get(c.Context(), id).Result()
+	var pageType string
+	var userDataJSON, predictionsJSON []byte
+	var createdAt time.Time
+
+	row := db.Pdb.QueryRow(`SELECT page_type, user_data, predictions, created_at FROM predictions WHERE uid = $1`, uid)
+	err := row.Scan(&pageType, &userDataJSON, &predictionsJSON, &createdAt)
+
 	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": common.ErrPredictionNotFound,
+		if err == sql.ErrNoRows {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": common.ErrPredictionNotFound,
+			})
+		}
+		log.Printf("Error retrieving prediction from PostgreSQL: %v", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to retrieve prediction", // More generic error for internal issues
 		})
 	}
 
-	var predictionData map[string]interface{}
-	err = json.Unmarshal([]byte(val), &predictionData)
+	var userData map[string]interface{}
+	err = json.Unmarshal(userDataJSON, &userData)
 	if err != nil {
+		log.Printf("Error unmarshaling user_data: %v", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": common.ErrFailedToParsePrediction,
 		})
 	}
 
-	return c.JSON(predictionData)
+	var predictions map[string]interface{}
+	err = json.Unmarshal(predictionsJSON, &predictions)
+	if err != nil {
+		log.Printf("Error unmarshaling predictions: %v", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": common.ErrFailedToParsePrediction,
+		})
+	}
+
+	// Construct the response similar to how it was returned by KVrocks
+	// This might need adjustment based on frontend expectations
+	response := fiber.Map{
+		"id":         uid,
+		"page_type":  pageType,
+		"user_data":  userData,
+		"predictions": predictions, // This will contain prediction_text and title
+		"created_at": createdAt,
+	}
+
+	// If it's a "viral" prediction, extract prediction_text and title
+	if pageType != common.PageTypeFuturePrediction {
+		if predText, ok := predictions["prediction_text"]; ok {
+			response["prediction"] = predText
+		}
+		if title, ok := predictions["title"]; ok {
+			response["title"] = title
+		}
+		delete(response, "predictions") // Remove the raw predictions map if specific fields are extracted
+	} else {
+		// For future predictions, the 'predictions' JSONB might just contain "prediction_text"
+		if predText, ok := predictions["prediction_text"]; ok {
+			response["prediction"] = predText
+		}
+		delete(response, "predictions")
+	}
+
+
+	return c.JSON(response)
 }
