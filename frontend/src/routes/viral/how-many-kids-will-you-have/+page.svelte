@@ -6,6 +6,7 @@
 
 	export let data: PageData;
 	let name: string = '';
+	let partner: string = '';
 	let dob: string = '';
 	let gender: string = '';
 	let loading = false;
@@ -33,10 +34,13 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					name,
-					dob,
-					gender,
-					slug: 'your-future-childs-face'
+					page_type: 'how-many-kids-will-you-have',
+					user_data: {
+						name,
+						partner,
+						dob,
+						gender
+					}
 				})
 			});
 
@@ -50,7 +54,7 @@
 			if (response.ok) {
 				const responseData = await response.json();
 				// Navigate to the prediction result page
-				goto(`/viral/your-future-childs-face/${responseData.id}`);
+				goto(`/viral/how-many-kids-will-you-have/${responseData.id}`);
 			} else {
 				const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
 				errorMessage = errorData.message || 'Failed to generate prediction. Please try again.';
@@ -81,6 +85,17 @@
 					placeholder="e.g., Jane Doe"
 					required
 					bind:value={name}
+				/>
+			</div>
+
+			<div class="form-group" class:animate-fade-in={mounted} style="--anim-delay: 150ms">
+				<label for="partner">Partner's Name</label>
+				<input
+					type="text"
+					id="partner"
+					name="partner"
+					placeholder="e.g., John Smith"
+					bind:value={partner}
 				/>
 			</div>
 

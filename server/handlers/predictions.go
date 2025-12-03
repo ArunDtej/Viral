@@ -4,39 +4,46 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
-	"Viral/common" // Import the new common package
+	"Viral/common"
 )
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-type PredictionGenerator func(name, dob string) string
+// Updated PredictionGenerator to accept a map for more flexible data
+type PredictionGenerator func(userData map[string]interface{}) string
 
-var predictionTitles = common.PredictionTitles // Use the constant from common package
+var predictionTitles = common.PredictionTitles
 
 var predictionGenerators = map[string]PredictionGenerator{
-	"future-prediction": func(name, dob string) string {
-		days := rand.Intn(365) + 1
-		return fmt.Sprintf(common.PredictionBaseAmazingEvent, days, name)
+	"future-prediction": func(userData map[string]interface{}) string {
+		// Select a random prediction from the FuturePredictions slice
+		return common.FuturePredictions[rand.Intn(len(common.FuturePredictions))]
 	},
-	"when-will-you-get-married": func(name, dob string) string {
+	"when-will-you-get-married": func(userData map[string]interface{}) string {
 		years := rand.Intn(10) + 1
 		return fmt.Sprintf(common.PredictionBaseMarried, years)
 	},
-	"when-will-you-become-a-millionaire": func(name, dob string) string {
+	"when-will-you-become-a-millionaire": func(userData map[string]interface{}) string {
 		years := rand.Intn(20) + 5
 		return fmt.Sprintf(common.PredictionBaseMillionaire, years)
 	},
-	"your-future-childs-face": func(name, dob string) string {
-		return common.PredictionBaseFutureChild
+	"how-many-kids-will-you-have": func(userData map[string]interface{}) string {
+		// name, _ := userData["name"].(string) // Name is not used in this prediction
+		partner, ok := userData["partner"].(string)
+		if !ok || partner == "" {
+			partner = "your partner"
+		}
+		kids := rand.Intn(5) + 1
+		return fmt.Sprintf("You and %s will have %d kids together.", partner, kids)
 	},
-	"which-country-will-you-live-in": func(name, dob string) string {
+	"which-country-will-you-live-in": func(userData map[string]interface{}) string {
 		countries := []string{"Japan", "Italy", "Australia", "Canada", "Brazil", "New Zealand"}
 		country := countries[rand.Intn(len(countries))]
 		return fmt.Sprintf(common.PredictionBaseLiveInCountry, country)
 	},
-	"your-2025-fortune-reading": func(name, dob string) string {
+	"your-2025-fortune-reading": func(userData map[string]interface{}) string {
 		return common.FortuneReadings[rand.Intn(len(common.FortuneReadings))]
 	},
 }
