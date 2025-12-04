@@ -179,12 +179,13 @@ func HandleGetPrediction(c *fiber.Ctx) error {
 	uid := c.Params("id")
 	log.Printf("Attempting to retrieve prediction with UID: %s", uid)
 
+	var id int
 	var pageType string
 	var userDataJSON, predictionsJSON []byte
 	var createdAt time.Time
 
-	row := db.Pdb.QueryRow(`SELECT page_type, user_data, predictions, created_at FROM predictions WHERE uid = $1`, uid)
-	err := row.Scan(&pageType, &userDataJSON, &predictionsJSON, &createdAt)
+	row := db.Pdb.QueryRow(`SELECT id, page_type, user_data, predictions, created_at FROM predictions WHERE uid = $1`, uid)
+	err := row.Scan(&id, &pageType, &userDataJSON, &predictionsJSON, &createdAt)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -216,11 +217,26 @@ func HandleGetPrediction(c *fiber.Ctx) error {
 		})
 	}
 
+	// Get previous and next predictions
+	prevPredictions, err := getRelatedPredictions(id, "previous")
+	if err != nil {
+		log.Printf("Error getting previous predictions: %v", err)
+		// Not a fatal error, so we can continue
+	}
+
+	nextPredictions, err := getRelatedPredictions(id, "next")
+	if err != nil {
+		log.Printf("Error getting next predictions: %v", err)
+		// Not a fatal error, so we can continue
+	}
+
 	response := fiber.Map{
-		"id":         uid,
-		"page_type":  pageType,
-		"user_data":  userData,
-		"created_at": createdAt,
+		"id":                   uid,
+		"page_type":            pageType,
+		"user_data":            userData,
+		"created_at":           createdAt,
+		"previous_predictions": prevPredictions,
+		"next_predictions":     nextPredictions,
 	}
 
 	if predText, ok := predictions["prediction_text"]; ok {
@@ -231,4 +247,43 @@ func HandleGetPrediction(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(response)
+}
+
+type RelatedPrediction struct {
+	UID      string `json:"uid"`
+	PageType string `json:"page_type"`
+}
+
+func getRelatedPredictions(id int, direction string) ([]RelatedPrediction, error) {
+	var rows *sql.Rows
+	var err error
+
+	if direction == "previous" {
+		rows, err = db.Pdb.Query(`SELECT uid, page_type FROM predictions WHERE id < $1 ORDER BY id DESC LIMIT 5`, id)
+	} else {
+		rows, err = db.Pdb.Query(`SELECT uid, page_type FROM predictions WHERE id > $1 ORDER BY id ASC LIMIT 5`, id)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var relatedPredictions []RelatedPrediction
+	for rows.Next() {
+		var p RelatedPrediction
+		if err := rows.Scan(&p.UID, &p.PageType); err != nil {
+			return nil, err
+		}
+		relatedPredictions = append(relatedPredictions, p)
+	}
+
+	// Reverse the order of previous predictions to be ascending
+	if direction == "previous" {
+		for i, j := 0, len(relatedPredictions)-1; i < j; i, j = i+1, j-1 {
+			relatedPredictions[i], relatedPredictions[j] = relatedPredictions[j], relatedPredictions[i]
+		}
+	}
+
+	return relatedPredictions, nil
 }

@@ -31,7 +31,9 @@ export async function load({ params, fetch }) {
             prediction: backendPrediction.prediction, // The actual generated prediction string
             user_data: backendPrediction.user_data,
             title: backendPrediction.title, // Use the title from the backend
-            icon: frontendPredictionDetails.icon // Use the icon from the frontend definition
+            icon: frontendPredictionDetails.icon, // Use the icon from the frontend definition
+            previous_predictions: backendPrediction.previous_predictions,
+            next_predictions: backendPrediction.next_predictions
         }
     };
 }

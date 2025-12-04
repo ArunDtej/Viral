@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import { Share } from 'lucide-svelte'; // Assuming lucide-svelte is installed
+	import { Share } from 'lucide-svelte';
+	import PredictionText from '$lib/components/PredictionText.svelte';
 
 	export let data: PageData;
 
@@ -50,9 +51,7 @@
 		</div>
 
 		<div class="form-group" class:animate-fade-in={mounted} style="--anim-delay: 0.8s">
-			<p class="prediction-text">
-				{generatedPrediction}
-			</p>
+			<PredictionText text={generatedPrediction} />
 		</div>
 
 		<div class="form-group" style="--anim-delay: 1.0s">
@@ -62,6 +61,24 @@
 			</button>
 		</div>
 	</div>
+</div>
+
+<!-- SEO: Invisible links to other predictions -->
+<div
+	class="inactive-links"
+	aria-hidden="true"
+	style="display: none; visibility: hidden; height: 0; width: 0; overflow: hidden;"
+>
+	{#if data.prediction.previous_predictions}
+		{#each data.prediction.previous_predictions as p}
+			<a href="/viral/{p.page_type}/{p.uid}">{p.page_type} prediction {p.uid}</a>
+		{/each}
+	{/if}
+	{#if data.prediction.next_predictions}
+		{#each data.prediction.next_predictions as p}
+			<a href="/viral/{p.page_type}/{p.uid}">{p.page_type} prediction {p.uid}</a>
+		{/each}
+	{/if}
 </div>
 
 <style>
