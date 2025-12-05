@@ -49,5 +49,5 @@ func main() {
 	app.Get("/api/prediction/:id", handlers.HandleGetPrediction)
 	app.Get("/api/predictions/recent", handlers.HandleGetRecentPredictions)
 
-	log.Fatal(app.Listen(":8000"))
+	log.Fatal(app.Listen(":8080"))
 }
