@@ -26,6 +26,7 @@
 			<li><a href="/viral/{prediction.slug}">{prediction.title}</a></li>
 		{/each}
 		<li><a href="https://apigate.in">ApiGate</a></li>
+		<li><a href="https://viral.necrobyte.in">Necrobyte</a></li>
 		<li><a href="https://viral.necrobyte.in">Viral Necrobyte</a></li>
 	</ul>
 </div>
