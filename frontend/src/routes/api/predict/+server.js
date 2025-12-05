@@ -2,7 +2,7 @@ import { json, error } from '@sveltejs/kit';
 
 import { API_BASE_URL } from '$lib/config';
 
-const BACKEND_URL = API_BASE_URL;
+const BACKEND_URL = 'http://127.0.0.1:8080';
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {
