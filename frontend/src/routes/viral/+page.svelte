@@ -38,6 +38,16 @@
 				</li>
 			{/each}
 		</ul>
+
+		<div class="hidden-seo-links" style="display: none;">
+			{#if data.recentPredictions}
+				{#each data.recentPredictions as prediction}
+					<a href="/viral/{prediction.page_type}/{prediction.uid}"
+						>{prediction.title || prediction.page_type}</a
+					>
+				{/each}
+			{/if}
+		</div>
 	</div>
 </div>
 

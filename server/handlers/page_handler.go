@@ -249,6 +249,61 @@ func HandleGetPrediction(c *fiber.Ctx) error {
 	return c.JSON(response)
 }
 
+func HandleGetRecentPredictions(c *fiber.Ctx) error {
+	rows, err := db.Pdb.Query(`SELECT uid, page_type, user_data, predictions, created_at FROM predictions ORDER BY created_at DESC LIMIT 5`)
+	if err != nil {
+		log.Printf("Error retrieving recent predictions: %v", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to retrieve recent predictions",
+		})
+	}
+	defer rows.Close()
+
+	var recentPredictions []fiber.Map
+	for rows.Next() {
+		var uid, pageType string
+		var userDataJSON, predictionsJSON []byte
+		var createdAt time.Time
+
+		if err := rows.Scan(&uid, &pageType, &userDataJSON, &predictionsJSON, &createdAt); err != nil {
+			log.Printf("Error scanning recent prediction: %v", err)
+			continue
+		}
+
+		var userData map[string]interface{}
+		if err := json.Unmarshal(userDataJSON, &userData); err != nil {
+			log.Printf("Error unmarshaling user_data: %v", err)
+			continue
+		}
+
+		var predictions map[string]interface{}
+		if err := json.Unmarshal(predictionsJSON, &predictions); err != nil {
+			log.Printf("Error unmarshaling predictions: %v", err)
+			continue
+		}
+
+		predictionMap := fiber.Map{
+			"uid":        uid,
+			"page_type":  pageType,
+			"user_data":  userData,
+			"created_at": createdAt,
+		}
+
+		if predText, ok := predictions["prediction_text"]; ok {
+			predictionMap["prediction"] = predText
+		}
+		if title, ok := predictions["title"]; ok {
+			predictionMap["title"] = title
+		}
+
+		recentPredictions = append(recentPredictions, predictionMap)
+	}
+
+	return c.JSON(fiber.Map{
+		"recent_predictions": recentPredictions,
+	})
+}
+
 type RelatedPrediction struct {
 	UID      string `json:"uid"`
 	PageType string `json:"page_type"`

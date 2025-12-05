@@ -1,12 +1,13 @@
 import { error } from '@sveltejs/kit';
 import { getPrediction } from '$lib/predictions';
+import { API_BASE_URL } from '$lib/config';
 
 /** @type {import('./$types').PageLoad} */
 export async function load({ params, fetch }) {
     const predictionId = params.id;
 
     // Fetch the prediction data from the backend
-    const response = await fetch(`http://localhost:8000/api/prediction/${predictionId}`);
+    const response = await fetch(`${API_BASE_URL}/api/prediction/${predictionId}`);
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);

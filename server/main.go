@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
 	"Viral/db"
 	"Viral/handlers"
+	"log"
+
 	// "time"
 
 	"Viral/middlewares"
@@ -26,7 +27,7 @@ func main() {
 	if err := db.InitDB(); err != nil {
 		log.Fatal("Failed to connect to the database")
 	}
-	
+
 	// Initialize Fiber app
 	app := fiber.New(fiber.Config{
 		Prefork:      true,
@@ -46,7 +47,7 @@ func main() {
 	app.Post("/api/page", handlers.HandlePage)
 	app.Post("/api/predict", handlers.HandlePredict)
 	app.Get("/api/prediction/:id", handlers.HandleGetPrediction)
-	
+	app.Get("/api/predictions/recent", handlers.HandleGetRecentPredictions)
+
 	log.Fatal(app.Listen(":8000"))
 }
-

@@ -1,6 +1,8 @@
 import { json, error } from '@sveltejs/kit';
 
-const BACKEND_URL = 'http://localhost:8000';
+import { API_BASE_URL } from '$lib/config';
+
+const BACKEND_URL = API_BASE_URL;
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {
