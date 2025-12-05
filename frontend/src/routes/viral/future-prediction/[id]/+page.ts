@@ -16,7 +16,7 @@ export async function load({ params, fetch }) {
     }
 
     const backendPrediction = await response.json();
-    console.log('Backend Prediction:', backendPrediction); // Log the backend prediction
+    // console.log('Backend Prediction:', backendPrediction); // Log the backend prediction
 
     // Now, get the frontend prediction details (title, icon, etc.) using the slug
     // This assumes backendPrediction.page_type will contain the slug

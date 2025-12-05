@@ -60,7 +60,6 @@ func isDangerous(value string) bool {
 	// Check dangerous words (whole word only)
 	for _, word := range dangerousWords {
 		if matchWholeWord(normalized, word) {
-			log.Println("Blocked: matched word:", word)
 			return true
 		}
 	}
@@ -68,7 +67,6 @@ func isDangerous(value string) bool {
 	// Check dangerous symbols (anywhere)
 	for _, symbol := range dangerousSymbols {
 		if strings.Contains(decoded, symbol) {
-			log.Println("Blocked: matched symbol:", symbol)
 			return true
 		}
 	}

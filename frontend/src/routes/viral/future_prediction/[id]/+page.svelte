@@ -8,11 +8,9 @@
 	let mounted = false;
 	onMount(() => {
 		mounted = true;
-		console.log('Page mounted, mounted =', mounted);
 	});
 
 	function share() {
-		console.log('Share button clicked!');
 		if (navigator.share) {
 			navigator
 				.share({
