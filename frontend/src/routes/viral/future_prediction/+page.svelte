@@ -32,7 +32,8 @@
 				body: JSON.stringify({
 					name,
 					dob,
-					gender
+					gender,
+					slug: 'future-prediction'
 				})
 			});
 
@@ -49,7 +50,10 @@
 				goto(`/viral/future_prediction/${data.id}`);
 			} else {
 				const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
-				errorMessage = errorData.message || 'Failed to generate prediction. Please try again.';
+				errorMessage =
+					errorData.message ||
+					errorData.error ||
+					'Failed to generate prediction. Please try again.';
 			}
 		} catch (error) {
 			console.error('Error submitting prediction:', error);
