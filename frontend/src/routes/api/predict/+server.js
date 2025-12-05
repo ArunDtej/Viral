@@ -40,7 +40,7 @@ export async function POST({ request }) {
 	} catch (err) {
 		console.error('Prediction API error:', err);
 
-		if (err.status) {
+		if (typeof err === 'object' && err !== null && 'status' in err) {
 			throw err;
 		}
 

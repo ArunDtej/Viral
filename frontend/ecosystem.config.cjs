@@ -6,7 +6,8 @@ module.exports = {
       exec_mode: 'fork',
       env: {
         PORT: 3001,
-        HOST: '0.0.0.0'
+        HOST: '0.0.0.0',
+        PUBLIC_API_URL: 'https://viral.necrobyte.in'
       }
     }
   ]
