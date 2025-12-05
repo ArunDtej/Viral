@@ -23,6 +23,8 @@
 		errorMessage = '';
 		loading = true;
 
+		console.log('Submitting prediction form:', { name, dob, gender });
+
 		const minLoadingTime = 2000; // 2 seconds for better UX
 		const startTime = Date.now();
 

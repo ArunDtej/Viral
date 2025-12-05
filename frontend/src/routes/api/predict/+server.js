@@ -8,9 +8,11 @@ const BACKEND_URL = 'http://127.0.0.1:8080';
 export async function POST({ request }) {
 	try {
 		const body = await request.json();
+		console.log('Received prediction request body:', body);
 
 		// Validate required fields
 		if (!body.name || !body.dob) {
+			console.log('Validation failed:', { name: body.name, dob: body.dob });
 			throw error(400, 'Missing required fields: name and dob are required');
 		}
 
