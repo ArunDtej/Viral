@@ -7,7 +7,8 @@ module.exports = {
       env: {
         PORT: 3001,
         HOST: '0.0.0.0',
-        PUBLIC_API_URL: 'https://viral.necrobyte.in'
+        PUBLIC_API_URL: 'https://viral.necrobyte.in',
+        PRIVATE_API_URL: 'http://127.0.0.1:8080'
       }
     }
   ]
