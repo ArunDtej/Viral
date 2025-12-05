@@ -6,7 +6,7 @@ module.exports = {
       exec_mode: 'fork',
       env: {
         // Environment variables for your application
-        PORT: 3000, // Change this to your desired port
+        PORT: 3001, // Change this to your desired port
         HOST: '0.0.0.0',
       },
     },
