@@ -1,7 +1,7 @@
 import { predictionList } from '$lib/predictions';
 import { env } from '$env/dynamic/private';
 
-const SITE_URL = 'https://viral.necrobyte.in'; // Hardcoded for production SEO
+const SITE_URL = 'https://necrobyte.in'; // Hardcoded for production SEO
 const BACKEND_URL = env.PRIVATE_API_URL || 'http://127.0.0.1:8080';
 
 export async function GET() {
