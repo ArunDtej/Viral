@@ -3,7 +3,7 @@ import { API_BASE_URL } from '$lib/config';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ params, fetch }) {
-	const response = await fetch(`http://127.0.0.1:8080/api/prediction/${params.id}`);
+	const response = await fetch(`${API_BASE_URL}/api/prediction/${params.id}`);
 
 	if (response.ok) {
 		const prediction = await response.json();
