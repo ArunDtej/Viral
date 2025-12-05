@@ -1,10 +1,13 @@
 module.exports = {
   apps: [
     {
-      name: 'frontend',
+      name: 'viral-frontend',
+      cwd: '/home/g200561_arun/Viral/frontend',   // VERY IMPORTANT
       script: 'build/index.js',
       exec_mode: 'fork',
+      instances: 1,
       env: {
+        NODE_ENV: 'production',        // REQUIRED for SvelteKit
         PORT: 3001,
         HOST: '0.0.0.0',
         PUBLIC_API_URL: 'https://viral.necrobyte.in',
