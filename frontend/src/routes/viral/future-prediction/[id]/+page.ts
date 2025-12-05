@@ -8,23 +8,10 @@ export async function load({ params, fetch }) {
 
 
     // Fetch the prediction data from the backend
-    const url = `${API_BASE_URL}/api/prediction/${predictionId}`;
-    // console.log(`Fetching prediction from: ${url}`);
-
-    const response = await fetch(url);
+    const response = await fetch(`${API_BASE_URL}/api/prediction/${predictionId}`);
 
     if (!response.ok) {
-        console.error(`Fetch failed for ${url} with status ${response.status}`);
-        const text = await response.text();
-        console.error(`Response body: ${text}`);
-
-        let errorData;
-        try {
-            errorData = JSON.parse(text);
-        } catch (e) {
-            // ignore json parse error
-        }
-
+        const errorData = await response.json().catch(() => null);
         const message = errorData?.error || 'Prediction not found';
         throw error(response.status, message);
     }
