@@ -1,7 +1,6 @@
 import adapter from '@sveltejs/adapter-node';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
-/** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: vitePreprocess(),
 
@@ -10,10 +9,8 @@ const config = {
 
 		paths: {
 			base: '',
-			relative: false   // ← REQUIRED for production behind Nginx
-		},
-
-		trailingSlash: 'ignore'
+			relative: false
+		}
 	}
 };
 
