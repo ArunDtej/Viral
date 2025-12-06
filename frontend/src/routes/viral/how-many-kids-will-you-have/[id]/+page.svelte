@@ -21,6 +21,11 @@
 				/you\s+and\s+your\s+partner/gi,
 				replacement
 			);
+
+			// Fallback: If backend returned "You and [Partner]", replace "You" with Name
+			if (generatedPrediction.startsWith('You ') && !generatedPrediction.startsWith(uName)) {
+				generatedPrediction = generatedPrediction.replace('You', uName);
+			}
 		}
 	}
 

@@ -24,6 +24,7 @@ export async function POST({ request }) {
 
 		const payload = {
 			slug: slug,
+			page_type: slug, // Add page_type to trigger newReq path in backend
 			name: userData.name,
 			dob: userData.dob,
 			gender: userData.gender,
