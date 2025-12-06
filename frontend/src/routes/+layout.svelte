@@ -3,6 +3,7 @@
 	import '../lib/styles/global.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import StarryBackground from '$lib/components/StarryBackground.svelte';
+	import AdsterraBanner from '$lib/components/AdsterraBanner.svelte';
 	import { predictionList } from '$lib/predictions';
 
 	let { children } = $props();
@@ -17,6 +18,7 @@
 </div>
 
 <div class="relative z-10 min-h-screen flex flex-col">
+	<AdsterraBanner />
 	{@render children()}
 </div>
 
