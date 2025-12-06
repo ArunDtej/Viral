@@ -11,11 +11,17 @@
 
 	// Replace placeholder text with actual names if partner name is available
 	if (data.prediction.user_data?.partner && data.prediction.user_data?.name) {
-		const uName = data.prediction.user_data.name;
-		const pName = data.prediction.user_data.partner;
-		const replacement = `${uName} and ${pName}`;
-		// Replace "You and your partner" case-insensitively
-		generatedPrediction = generatedPrediction.replace(/you and your partner/gi, replacement);
+		const uName = data.prediction.user_data.name.trim();
+		const pName = data.prediction.user_data.partner.trim();
+
+		if (uName && pName) {
+			const replacement = `${uName} and ${pName}`;
+			// Replace "You and your partner" case-insensitively, handling any whitespace
+			generatedPrediction = generatedPrediction.replace(
+				/you\s+and\s+your\s+partner/gi,
+				replacement
+			);
+		}
 	}
 
 	onMount(() => {
