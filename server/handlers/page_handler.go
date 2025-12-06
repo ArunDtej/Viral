@@ -129,8 +129,10 @@ func HandlePredict(c *fiber.Ctx) error {
 	generator, ok := predictionGenerators[pageType]
 	if !ok {
 		log.Printf("HandlePredict - Invalid slug '%s', available slugs: %v", pageType, getAvailableSlugs())
+		// Return both error and message for backward compatibility with old frontend code
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": common.ErrInvalidSlug + ": '" + pageType + "'",
+			"error":   common.ErrInvalidSlug + ": '" + pageType + "'",
+			"message": common.ErrInvalidSlug,
 		})
 	}
 

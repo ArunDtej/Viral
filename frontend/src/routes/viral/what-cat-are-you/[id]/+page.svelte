@@ -1,12 +1,22 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import { Share, RefreshCw, Home } from 'lucide-svelte'; // Assuming lucide-svelte is installed
+	import { Share, RefreshCw, Home } from 'lucide-svelte';
 
 	export let data: PageData;
 
 	let mounted = false;
-	let catData = JSON.parse(data.prediction.prediction);
+	let catData: { image: string; name: string } = { image: '', name: '' };
+
+	// Safely parse the cat prediction data
+	try {
+		if (data.prediction.prediction) {
+			catData = JSON.parse(data.prediction.prediction);
+		}
+	} catch (e) {
+		console.error('Error parsing cat data:', e);
+		catData = { image: '/assets/cats/cat.webp', name: 'Unknown Cat' };
+	}
 
 	onMount(() => {
 		mounted = true;

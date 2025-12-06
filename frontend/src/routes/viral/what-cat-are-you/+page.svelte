@@ -36,7 +36,8 @@
 					name,
 					dob,
 					gender,
-					slug: 'what-cat-are-you'
+					slug: 'what-cat-are-you',
+					page_type: 'what-cat-are-you'
 				})
 			});
 
@@ -52,8 +53,8 @@
 				// Navigate to the prediction result page
 				goto(`/viral/what-cat-are-you/${responseData.id}`);
 			} else {
-				const errorData = await response.json().catch(() => ({ message: 'An error occurred' }));
-				errorMessage = errorData.message || 'Failed to generate prediction. Please try again.';
+				const errorData = await response.json().catch(() => ({ error: 'An error occurred', message: 'An error occurred' }));
+				errorMessage = errorData.error || errorData.message || 'Failed to generate prediction. Please try again.';
 			}
 		} catch (error) {
 			console.error('Error submitting prediction:', error);

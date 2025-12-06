@@ -43,7 +43,9 @@ export async function POST({ request }) {
 
 		if (!response.ok) {
 			const errorData = await response.json().catch(() => ({ error: 'Failed to create prediction' }));
-			throw error(response.status, errorData.error || 'Failed to create prediction');
+			const errorMessage = errorData.error || errorData.message || 'Failed to create prediction';
+			console.error('Backend error:', errorMessage, errorData);
+			throw error(response.status, errorMessage);
 		}
 
 		const data = await response.json();
