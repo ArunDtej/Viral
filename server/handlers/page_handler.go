@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"log"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -95,11 +96,15 @@ func HandlePredict(c *fiber.Ctx) error {
 	}
 
 	// Determine pageType from either page_type or slug
-	if req.PageType != "" {
-		pageType = req.PageType
-	} else {
-		pageType = req.Slug
+	// Trim whitespace to handle any accidental spaces
+	if strings.TrimSpace(req.PageType) != "" {
+		pageType = strings.TrimSpace(req.PageType)
+	} else if strings.TrimSpace(req.Slug) != "" {
+		pageType = strings.TrimSpace(req.Slug)
 	}
+
+	// Log the received values for debugging
+	log.Printf("HandlePredict - Received PageType: '%s', Slug: '%s', Final pageType: '%s'", req.PageType, req.Slug, pageType)
 
 	// Consolidate userData
 	if req.UserData != nil {
@@ -113,10 +118,19 @@ func HandlePredict(c *fiber.Ctx) error {
 		}
 	}
 
+	// Validate pageType is not empty
+	if pageType == "" {
+		log.Printf("HandlePredict - Empty pageType, PageType: '%s', Slug: '%s'", req.PageType, req.Slug)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": common.ErrInvalidSlug + ": page_type or slug is required",
+		})
+	}
+
 	generator, ok := predictionGenerators[pageType]
 	if !ok {
+		log.Printf("HandlePredict - Invalid slug '%s', available slugs: %v", pageType, getAvailableSlugs())
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": common.ErrInvalidSlug,
+			"error": common.ErrInvalidSlug + ": '" + pageType + "'",
 		})
 	}
 
@@ -379,4 +393,13 @@ func getRelatedPredictions(id int, direction string) ([]RelatedPrediction, error
 	}
 
 	return relatedPredictions, nil
+}
+
+// getAvailableSlugs returns a list of available prediction slugs for debugging
+func getAvailableSlugs() []string {
+	slugs := make([]string, 0, len(predictionGenerators))
+	for slug := range predictionGenerators {
+		slugs = append(slugs, slug)
+	}
+	return slugs
 }
