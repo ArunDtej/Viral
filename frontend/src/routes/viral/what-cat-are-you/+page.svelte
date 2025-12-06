@@ -36,8 +36,7 @@
 					name,
 					dob,
 					gender,
-					slug: 'what-cat-are-you',
-					page_type: 'what-cat-are-you'
+					slug: 'what-cat-are-you'
 				})
 			});
 
