@@ -15,6 +15,7 @@ const (
 const (
 	PageTypeViral            = "viral"
 	PageTypeFuturePrediction = "future_prediction"
+	PageTypeCats             = "cats"
 )
 
 // Default values
@@ -30,6 +31,7 @@ var PredictionTitles = map[string]string{
 	"how-many-kids-will-you-have":        "How many kids will you have?",
 	"which-country-will-you-live-in":     "Which country will you live in?",
 	"your-2025-fortune-reading":          "Your 2025 fortune reading",
+	"what-cat-are-you":                   "What Cat Are You?",
 }
 var FuturePredictions = []string{
 	"You will make a life-changing decision within the next 30 days.",

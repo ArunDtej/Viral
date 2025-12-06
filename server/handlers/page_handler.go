@@ -35,11 +35,42 @@ func HandlePage(c *fiber.Ctx) error {
 		return handleViral(c, req.Data)
 	case common.PageTypeFuturePrediction:
 		return handleFuturePrediction(c, req.Data)
+	case common.PageTypeCats:
+		return handleCatsPage(c, req.Data)
 	default:
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": common.ErrInvalidPageType,
 		})
 	}
+}
+
+var catData = map[string]string{
+	"cat1.jpg": "Whiskers",
+	"cat2.jpg": "Mittens",
+	"cat3.jpg": "Shadow",
+}
+
+func handleCatsPage(c *fiber.Ctx, data interface{}) error {
+	// get a random cat from the map
+	var catNames []string
+	for _, name := range catData {
+		catNames = append(catNames, name)
+	}
+	randomCatName := catNames[rand.Intn(len(catNames))]
+
+	// find the filename for the random cat name
+	var fileName string
+	for f, n := range catData {
+		if n == randomCatName {
+			fileName = f
+			break
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"file_name": fileName,
+		"cat_name":  randomCatName,
+	})
 }
 
 func HandlePredict(c *fiber.Ctx) error {

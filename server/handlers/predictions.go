@@ -49,4 +49,22 @@ var predictionGenerators = map[string]PredictionGenerator{
 	"your-2025-fortune-reading": func(userData map[string]interface{}) string {
 		return common.FortuneReadings[rand.Intn(len(common.FortuneReadings))]
 	},
+	"what-cat-are-you": func(userData map[string]interface{}) string {
+		catImages := []string{
+			"cat.webp", "cat2.webp", "cat3.webp", "cat4.webp", "cat5.webp",
+			"cat6.webp", "cat7.webp", "cat8.jpg", "cat9.jpg", "cat10.jpg",
+			"cat11.jpg", "cat12.jpg", "cat13.jpg", "cat14.jpg", "cat15.jpg",
+			"cat16.jpg", "cat17.jpg",
+		}
+		catNames := []string{
+			"Whiskers", "Shadow", "Oreo", "Luna", "Simba", "Tiger", "Smokey",
+			"Misty", "Coco", "Max", "Chloe", "Lucy", "Leo", "Milo", "Bella",
+			"Rocky", "Gizmo",
+		}
+		
+		randomCatImage := catImages[rand.Intn(len(catImages))]
+		randomCatName := catNames[rand.Intn(len(catNames))]
+
+		return fmt.Sprintf(`{"image": "/assets/cats/%s", "name": "%s"}`, randomCatImage, randomCatName)
+	},
 }
