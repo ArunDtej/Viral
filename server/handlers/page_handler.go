@@ -77,34 +77,39 @@ func HandlePredict(c *fiber.Ctx) error {
 	var pageType string
 	var userData map[string]interface{}
 
-	// Attempt to parse the new payload structure
-	var newReq struct {
+	// Universal payload structure to capture all possible fields
+	var req struct {
 		PageType string                 `json:"page_type"`
 		UserData map[string]interface{} `json:"user_data"`
+		Name     string                 `json:"name"`
+		Dob      string                 `json:"dob"`
+		Gender   string                 `json:"gender"`
+		Partner  string                 `json:"partner"`
+		Slug     string                 `json:"slug"`
 	}
-	if err := c.BodyParser(&newReq); err == nil && newReq.PageType != "" {
-		pageType = newReq.PageType
-		userData = newReq.UserData
+
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": common.ErrCannotParseJSON,
+		})
+	}
+
+	// Determine pageType from either page_type or slug
+	if req.PageType != "" {
+		pageType = req.PageType
 	} else {
-		// If new payload parsing fails or is incomplete, attempt to parse the old payload structure
-		var oldReq struct {
-			Name    string `json:"name"`
-			Dob     string `json:"dob"`
-			Gender  string `json:"gender"`
-			Partner string `json:"partner"`
-			Slug    string `json:"slug"`
-		}
-		if err := c.BodyParser(&oldReq); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"error": common.ErrCannotParseJSON,
-			})
-		}
-		pageType = oldReq.Slug
+		pageType = req.Slug
+	}
+
+	// Consolidate userData
+	if req.UserData != nil {
+		userData = req.UserData
+	} else {
 		userData = map[string]interface{}{
-			"name":    oldReq.Name,
-			"dob":     oldReq.Dob,
-			"gender":  oldReq.Gender,
-			"partner": oldReq.Partner,
+			"name":    req.Name,
+			"dob":     req.Dob,
+			"gender":  req.Gender,
+			"partner": req.Partner,
 		}
 	}
 

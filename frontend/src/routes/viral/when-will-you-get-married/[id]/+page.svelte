@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { Share } from 'lucide-svelte'; // Assuming lucide-svelte is installed
 	import PredictionText from '$lib/components/PredictionText.svelte';
+	import PredictionButtons from '$lib/components/PredictionButtons.svelte';
 
 	export let data: PageData;
 
@@ -60,6 +61,8 @@
 				<span>Share your prediction</span>
 			</button>
 		</div>
+
+		<PredictionButtons slug="when-will-you-get-married" />
 	</div>
 </div>
 
