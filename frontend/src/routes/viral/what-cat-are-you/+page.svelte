@@ -6,8 +6,6 @@
 
 	export let data: PageData;
 	let name: string = '';
-	let dob: string = '';
-	let gender: string = '';
 	let loading = false;
 	let mounted = false;
 	let errorMessage = '';
@@ -34,8 +32,6 @@
 				},
 				body: JSON.stringify({
 					name,
-					dob,
-					gender,
 					slug: 'what-cat-are-you'
 				})
 			});
@@ -82,23 +78,6 @@
 					required
 					bind:value={name}
 				/>
-			</div>
-
-			<div class="form-group" class:animate-fade-in={mounted} style="--anim-delay: 200ms">
-				<label for="dob">Date of Birth</label>
-				<input type="date" id="dob" name="dob" required bind:value={dob} />
-			</div>
-
-			<div class="form-group" class:animate-fade-in={mounted} style="--anim-delay: 300ms">
-				<label for="gender">Gender</label>
-				<select id="gender" name="gender" required bind:value={gender}>
-					<option value="" disabled selected>Select your gender</option>
-					<option value="female">Female</option>
-					<option value="male">Male</option>
-					<option value="non-binary">Non-binary</option>
-					<option value="other">Other</option>
-					<option value="prefer-not-to-say">Prefer not to say</option>
-				</select>
 			</div>
 
 			<button

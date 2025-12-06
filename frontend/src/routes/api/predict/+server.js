@@ -17,9 +17,9 @@ export async function POST({ request }) {
 		const slug = body.page_type || body.slug || 'future-prediction';
 
 		// Validate required fields
-		if (!userData.name || !userData.dob) {
-			console.log('Validation failed:', { name: userData.name, dob: userData.dob });
-			throw error(400, 'Missing required fields: name and dob are required');
+		if (!userData.name) {
+			console.log('Validation failed:', { name: userData.name });
+			throw error(400, 'Missing required field: name is required');
 		}
 
 		const payload = {
