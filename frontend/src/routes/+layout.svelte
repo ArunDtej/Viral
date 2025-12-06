@@ -4,6 +4,7 @@
 	import favicon from '$lib/assets/favicon.svg';
 	import StarryBackground from '$lib/components/StarryBackground.svelte';
 	import AdsterraBanner from '$lib/components/AdsterraBanner.svelte';
+	import AdsterraBottom from '$lib/components/AdsterraBottom.svelte';
 	import { predictionList } from '$lib/predictions';
 
 	let { children } = $props();
@@ -20,6 +21,7 @@
 <div class="relative z-10 min-h-screen flex flex-col">
 	<AdsterraBanner />
 	{@render children()}
+	<AdsterraBottom />
 </div>
 
 <div style="display: none;" aria-hidden="true">
