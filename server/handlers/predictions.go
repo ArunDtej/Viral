@@ -1,10 +1,10 @@
 package handlers
 
 import (
+	"Viral/common"
 	"fmt"
 	"math/rand"
 	"time"
-	"Viral/common"
 )
 
 func init() {
@@ -30,13 +30,16 @@ var predictionGenerators = map[string]PredictionGenerator{
 		return fmt.Sprintf(common.PredictionBaseMillionaire, years)
 	},
 	"how-many-kids-will-you-have": func(userData map[string]interface{}) string {
-		// name, _ := userData["name"].(string) // Name is not used in this prediction
+		name, ok := userData["name"].(string)
+		if !ok || name == "" {
+			name = "You"
+		}
 		partner, ok := userData["partner"].(string)
 		if !ok || partner == "" {
 			partner = "your partner"
 		}
 		kids := rand.Intn(5) + 1
-		return fmt.Sprintf("You and %s will have %d kids together.", partner, kids)
+		return fmt.Sprintf("%s and %s will have %d kids together.", name, partner, kids)
 	},
 	"which-country-will-you-live-in": func(userData map[string]interface{}) string {
 		countries := []string{"Japan", "Italy", "Australia", "Canada", "Brazil", "New Zealand"}

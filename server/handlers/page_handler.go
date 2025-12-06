@@ -57,10 +57,11 @@ func HandlePredict(c *fiber.Ctx) error {
 	} else {
 		// If new payload parsing fails or is incomplete, attempt to parse the old payload structure
 		var oldReq struct {
-			Name   string `json:"name"`
-			Dob    string `json:"dob"`
-			Gender string `json:"gender"`
-			Slug   string `json:"slug"`
+			Name    string `json:"name"`
+			Dob     string `json:"dob"`
+			Gender  string `json:"gender"`
+			Partner string `json:"partner"`
+			Slug    string `json:"slug"`
 		}
 		if err := c.BodyParser(&oldReq); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -69,9 +70,10 @@ func HandlePredict(c *fiber.Ctx) error {
 		}
 		pageType = oldReq.Slug
 		userData = map[string]interface{}{
-			"name":   oldReq.Name,
-			"dob":    oldReq.Dob,
-			"gender": oldReq.Gender,
+			"name":    oldReq.Name,
+			"dob":     oldReq.Dob,
+			"gender":  oldReq.Gender,
+			"partner": oldReq.Partner,
 		}
 	}
 

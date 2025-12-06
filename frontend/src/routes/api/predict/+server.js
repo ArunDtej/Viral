@@ -27,8 +27,8 @@ export async function POST({ request }) {
 			name: userData.name,
 			dob: userData.dob,
 			gender: userData.gender,
-			partner: userData.partner, // passing partner if available
-			user_data: userData // Explicitly sending user_data object in case backend mistakenly relies on flattened fields or ignores unknown top-level fields
+			partner: userData.partner,
+			user_data: userData
 		};
 
 		// Call the backend API
